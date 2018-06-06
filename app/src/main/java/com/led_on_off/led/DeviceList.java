@@ -1,8 +1,13 @@
 package com.led_on_off.led;
 
+import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
+
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,8 +24,9 @@ import java.util.ArrayList;
 import java.util.Set;
 
 
-public class DeviceList extends ActionBarActivity
+public class DeviceList extends AppCompatActivity
 {
+
     //widgets
     Button btnPaired;
     ListView devicelist;
@@ -28,12 +34,26 @@ public class DeviceList extends ActionBarActivity
     private BluetoothAdapter myBluetooth = null;
     private Set<BluetoothDevice> pairedDevices;
     public static String EXTRA_ADDRESS = "device_address";
-
+    public String resultat ="";
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_list);
+
+        Intent intent = getIntent();
+
+        if(intent !=null){
+
+            resultat = intent.getStringExtra("resultat");
+        }
+        WifiManager manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiInfo info = manager.getConnectionInfo();
+        String MAC = info.getMacAddress();
+        String name = Build.MANUFACTURER+ " " + Build.MODEL;
+
+        String url = "http://192.168.1.6/getmodule.php";
+        new AsyncModule().execute(url,"MAC",MAC,"phonename",name,"idutilisateur",resultat);
 
         //Calling widgets
         btnPaired = (Button)findViewById(R.id.button);
@@ -103,6 +123,7 @@ public class DeviceList extends ActionBarActivity
 
             //Change the activity.
             i.putExtra(EXTRA_ADDRESS, address); //this will be received at ledControl (class) Activity
+            i.putExtra("resultat",resultat);
             startActivity(i);
         }
     };
@@ -127,7 +148,20 @@ public class DeviceList extends ActionBarActivity
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id == R.id.logout) {
+            logout();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
+    private void logout() {
+        Intent intent = new Intent(DeviceList.this,LoginActivity.class);
+
+
+        startActivity(intent);
+        DeviceList.this.finish();
+
+    }
+
 }

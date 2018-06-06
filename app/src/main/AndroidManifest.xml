@@ -18,11 +18,11 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="Survolus"
         android:theme="@style/AppTheme">
         <activity
             android:name="com.led_on_off.led.SplashScreen"
-            android:label="@string/app_name" >
+            android:label="Survolus" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,18 +31,18 @@
         </activity>
         <activity
             android:name="com.led_on_off.led.LoginActivity"
-            android:label="@string/app_name">
+            android:label="Survolus">
 
         </activity>
         <activity
             android:name="com.led_on_off.led.DeviceList"
-            android:label="@string/app_name">
+            android:label="Survolus">
 
         </activity>
 
         <activity
             android:name="com.led_on_off.led.ledControl"
-            android:label="LED Control">
+            android:label="Survolus Control">
 
         </activity>
         <activity

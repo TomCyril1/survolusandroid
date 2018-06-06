@@ -202,11 +202,13 @@ public class ledControl extends AppCompatActivity {
 
     // deconection de l'utilisateur
     private void logout() {
+        Disconnect();
         Intent intent = new Intent(ledControl.this, LoginActivity.class);
 
 
         startActivity(intent);
         ledControl.this.finish();
+
 
     }
 
@@ -243,7 +245,7 @@ public class ledControl extends AppCompatActivity {
             super.onPostExecute(result);
 
             if (!ConnectSuccess) {
-                msg("Connection Failed. Is it a SPP Bluetooth? Try again.");
+                msg("Connection echoué. Désactivez puis réactivez votre bluetooth.");
                 finish();
             } else {
                 msg("Connected.");
@@ -310,8 +312,8 @@ public class ledControl extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "VOTRE TELEPHONE TOMBE !", Toast.LENGTH_LONG).show();
 
             //  Envoi du signal vers BDD
-            LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+          //  LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+           // if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
                 // here to request the missing permissions, and then overriding
@@ -319,18 +321,18 @@ public class ledControl extends AppCompatActivity {
                 //                                          int[] grantResults)
                 // to handle the case where the user grants the permission. See the documentation
                 // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
-            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            double longitude = location.getLongitude();
-            double latitude = location.getLatitude();
-            String slongitude = String.valueOf(longitude);
-            String slatitude = String.valueOf(latitude);
-            WifiManager manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-            WifiInfo info = manager.getConnectionInfo();
-            String MAC = info.getMacAddress();
-            String url = "http://survolus.com:81/chute.php";
-            new AsyncChute().execute(url,"MAC",MAC,"latitude",slatitude,"longitude",slongitude);
+             //   return;
+          //  }
+           // Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+           // double longitude = location.getLongitude();
+          //  double latitude = location.getLatitude();
+         //   String slongitude = String.valueOf(longitude);
+          //  String slatitude = String.valueOf(latitude);
+          //  WifiManager manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+         //   WifiInfo info = manager.getConnectionInfo();
+          //  String MAC = info.getMacAddress();
+         //   String url = "http://survolus.com:81/chute.php";
+         //   new AsyncChute().execute(url,"MAC",MAC,"latitude",slatitude,"longitude",slongitude);
 
             //detect.setText(" Chute détectée !!");
 
@@ -350,7 +352,7 @@ public class ledControl extends AppCompatActivity {
                 }
                 catch (IOException e)
                 {e.printStackTrace();
-                    msg("Erreur de déploiement");
+                    msg("");
                 }
                 catch (InterruptedException e) {
 

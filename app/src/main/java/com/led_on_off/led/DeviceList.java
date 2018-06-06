@@ -52,7 +52,7 @@ public class DeviceList extends AppCompatActivity
         String MAC = info.getMacAddress();
         String name = Build.MANUFACTURER+ " " + Build.MODEL;
 
-        String url = "http://192.168.1.6/getmodule.php";
+        String url = "http://survolus.com:81/getmodule.php";
         new AsyncModule().execute(url,"MAC",MAC,"phonename",name,"idutilisateur",resultat);
 
         //Calling widgets

@@ -85,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
             try {
 
                 // Enter URL address where your php file resides
-                url = new URL("http://192.168.1.6/connexion.php");
+                url = new URL("http://survolus.com:81/connexion.php");
 
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block

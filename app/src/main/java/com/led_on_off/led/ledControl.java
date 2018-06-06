@@ -86,7 +86,7 @@ public class ledControl extends AppCompatActivity {
 
             resultat = intent.getStringExtra("resultat");
         }
-        String url = "http://192.168.1.6/getnomprenom.php";
+        String url = "http://survolus.com:81/getnomprenom.php";
         new AsyncLogin().execute(url, "id", resultat);
         //call the widgets
         On = (ImageButton) findViewById(R.id.on);
@@ -329,7 +329,7 @@ public class ledControl extends AppCompatActivity {
             WifiManager manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             WifiInfo info = manager.getConnectionInfo();
             String MAC = info.getMacAddress();
-            String url = "http://192.168.1.6/chute.php";
+            String url = "http://survolus.com:81/chute.php";
             new AsyncChute().execute(url,"MAC",MAC,"latitude",slatitude,"longitude",slongitude);
 
             //detect.setText(" Chute détectée !!");

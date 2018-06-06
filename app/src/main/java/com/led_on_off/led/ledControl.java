@@ -494,7 +494,7 @@ public class ledControl extends AppCompatActivity {
             if(result != null)
             {
                 TextView textView2 = (TextView) findViewById(R.id.Nom);
-                textView2.setText("Bonjour Mr "+ result);
+                textView2.setText("Bonjour "+ result);
                 menu.findItem(R.id.action_settings).setTitle(result);
 
 

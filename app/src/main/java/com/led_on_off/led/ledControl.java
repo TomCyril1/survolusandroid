@@ -12,7 +12,10 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
@@ -22,6 +25,7 @@ import android.os.Bundle;
 import android.os.Vibrator;
 
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,15 +44,23 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import static java.lang.Math.sqrt;
 import static java.lang.Thread.sleep;
 
 
-public class ledControl extends AppCompatActivity {
+public class ledControl extends AppCompatActivity implements LocationListener {
+    LocationManager locationManager;
     Menu menu;
-
+    TextView locationText;
+    TextView longitest;
+    TextView latitest;
+static String macadr;
+static String slatitude;
+static String slongitude;
     // Button btnOn, btnOff, btnDis;
     ImageButton On, Off, Discnt, Abt;
     String address = null;
@@ -118,8 +130,66 @@ public class ledControl extends AppCompatActivity {
             }
         });
 
+        //  Envoi du signal vers BDD
+        locationText = (TextView)findViewById(R.id.position);
+        longitest = (TextView)findViewById(R.id.test);
+        latitest = (TextView)findViewById(R.id.testlati);
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
+
 
     }
+    getLocation();
+
+
+
+    }
+    //getlocation
+    void getLocation() {
+        try {
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, (LocationListener) this);
+        }
+        catch(SecurityException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        locationText.setText("Latitude: " + location.getLatitude() + "\n Longitude: " + location.getLongitude());
+          slatitude = String.valueOf(location.getLatitude());
+          slongitude = String.valueOf(location.getLongitude());
+        try {
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            locationText.setText(locationText.getText() + "\n"+addresses.get(0).getAddressLine(0)+", "+
+                    addresses.get(0).getAddressLine(1)+", "+addresses.get(0).getAddressLine(2));
+        }catch(Exception e)
+        {
+
+        }
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        Toast.makeText(ledControl.this, "Please Enable GPS and Internet", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+    ////////
+
+
+
 
     private void Disconnect() {
         if (btSocket != null) //If the btSocket is busy
@@ -311,37 +381,13 @@ public class ledControl extends AppCompatActivity {
             }
             Toast.makeText(getApplicationContext(), "VOTRE TELEPHONE TOMBE !", Toast.LENGTH_LONG).show();
 
-            //  Envoi du signal vers BDD
-          //  LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-           // if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-             //   return;
-          //  }
-           // Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-           // double longitude = location.getLongitude();
-          //  double latitude = location.getLatitude();
-         //   String slongitude = String.valueOf(longitude);
-          //  String slatitude = String.valueOf(latitude);
-          //  WifiManager manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-         //   WifiInfo info = manager.getConnectionInfo();
-          //  String MAC = info.getMacAddress();
-         //   String url = "http://survolus.com:81/chute.php";
-         //   new AsyncChute().execute(url,"MAC",MAC,"latitude",slatitude,"longitude",slongitude);
 
             //detect.setText(" Chute détectée !!");
 
             // Discution  arduino ici  pour lancer le signal de déploiement du parachute
-            if (btSocket!=null)
-            {
-                try
-                {
-                    activation_parachute=true;
+            if (btSocket != null) {
+                try {
+                    activation_parachute = true;
                     display("Déploiement du parachute ...");
 
                     btSocket.getOutputStream().write("0".toString().getBytes());
@@ -349,21 +395,51 @@ public class ledControl extends AppCompatActivity {
                     sleep(4000);
 
                     btSocket.getOutputStream().write("1".toString().getBytes());
-                }
-                catch (IOException e)
-                {e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                     msg("");
-                }
-                catch (InterruptedException e) {
+                } catch (InterruptedException e) {
 
                 }
             }
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
+
+
+            }
+
+
+
         }
-        else
-        {
-            en_chute=false;
+        //le telephone est tombé et  il envoi la loca
+        if ( en_chute=true && total >3) {
+
+            get_localisation();
+            en_chute = false;
         }
     }
+
+    public void get_localisation()
+    {
+        //  Envoi du signal vers BDD
+        getLocation();
+        WifiManager manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiInfo info = manager.getConnectionInfo();
+        String MAC = info.getMacAddress();
+        String url = "http://survolus.com:81/chute.php";
+        longitest.setText(slongitude);
+        latitest.setText(macadr);
+        //slatitude = "2222";
+        // slongitude ="6444";
+        macadr= MAC.toString();
+
+
+
+        new AsyncModule().execute(url,"MAC",macadr,"latitude",slatitude,"longitude",slongitude);
+
+    }
+
 
     public void display(final String message) {
         runOnUiThread(new Runnable() {

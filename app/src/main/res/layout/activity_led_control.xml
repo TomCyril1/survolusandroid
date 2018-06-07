@@ -10,6 +10,16 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.led_on_off.led.ledControl">
 
+    <ImageButton
+        android:id="@+id/GPS"
+        android:layout_width="153dp"
+        android:layout_height="51dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="108dp"
+        android:background="@null"
+        android:src="@drawable/gps" />
+
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
@@ -64,18 +74,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
-
-    <Button
-        android:id="@+id/GPS"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="65dp"
-        android:text="GPS"
-        android:layout_alignTop="@+id/off"
-        android:layout_alignLeft="@+id/off"
-        android:layout_alignStart="@+id/off"
-        android:layout_alignRight="@+id/off"
-        android:layout_alignEnd="@+id/off" />
 
     <TextView
         android:id="@+id/Nom"

@@ -30,6 +30,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,7 +63,7 @@ static String macadr;
 static String slatitude;
 static String slongitude;
     // Button btnOn, btnOff, btnDis;
-    ImageButton On, Off, Discnt, Abt;
+    ImageButton On, Off, Discnt, Abt,Gps;
     String address = null;
     private ProgressDialog progress;
     BluetoothAdapter myBluetooth = null;
@@ -105,8 +106,25 @@ static String slongitude;
         Off = (ImageButton) findViewById(R.id.off);
         Discnt = (ImageButton) findViewById(R.id.discnt);
         Abt = (ImageButton) findViewById(R.id.abt);
-
+        Gps = (ImageButton) findViewById(R.id.GPS);
         new ConnectBT().execute(); //Call the class to connect
+
+        //Activtion du gps
+        Gps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               if(activation_gps==true){
+                   activation_gps =false;
+                   Toast.makeText(ledControl.this, "GPS désactivé...", Toast.LENGTH_SHORT).show();
+
+               }else {
+                   activation_gps=true;
+                   Toast.makeText(ledControl.this, "GPS activé !", Toast.LENGTH_SHORT).show();
+
+               }
+            }
+        });
+
 
         //commands to be sent to bluetooth
         On.setOnClickListener(new View.OnClickListener() {
@@ -175,7 +193,7 @@ static String slongitude;
 
     @Override
     public void onProviderDisabled(String provider) {
-        Toast.makeText(ledControl.this, "Please Enable GPS and Internet", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(ledControl.this, "Please Enable GPS and Internet", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -413,7 +431,9 @@ static String slongitude;
 
         }
         //le telephone est tombé et  il envoi la loca
-        if ( en_chute=true && total >3) {
+        if ( en_chute==true && total >3 && activation_gps == true) {
+            Toast.makeText(getApplicationContext(), "Envoi de la localisation du téléphone...", Toast.LENGTH_LONG).show();
+
 
             get_localisation();
             en_chute = false;

@@ -85,6 +85,17 @@ static String slongitude;
         // accelerometre = new capteur();
 
         String txt = new String();
+        //  Test GPS Activé ?
+        locationText = (TextView)findViewById(R.id.position);
+        longitest = (TextView)findViewById(R.id.test);
+        latitest = (TextView)findViewById(R.id.testlati);
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
+
+
+        }
+        getLocation();
 
         mSensorManager = (SensorManager) getSystemService(this.SENSOR_SERVICE);
         mSensorManager.registerListener(mSensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
@@ -158,7 +169,7 @@ static String slongitude;
 
 
     }
-    getLocation();
+
 
 
 
@@ -193,7 +204,7 @@ static String slongitude;
 
     @Override
     public void onProviderDisabled(String provider) {
-        //Toast.makeText(ledControl.this, "Please Enable GPS and Internet", Toast.LENGTH_SHORT).show();
+        Toast.makeText(ledControl.this, "Please Enable GPS and Internet", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -420,12 +431,7 @@ static String slongitude;
 
                 }
             }
-            if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
-
-
-            }
 
 
 
@@ -434,8 +440,17 @@ static String slongitude;
         if ( en_chute==true && total >3 && activation_gps == true) {
             Toast.makeText(getApplicationContext(), "Envoi de la localisation du téléphone...", Toast.LENGTH_LONG).show();
 
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
+
+
+            }
 
             get_localisation();
+            en_chute = false;
+        }
+        if (total > 3){
             en_chute = false;
         }
     }
@@ -449,7 +464,7 @@ static String slongitude;
         String MAC = info.getMacAddress();
         String url = "http://survolus.com:81/chute.php";
         longitest.setText(slongitude);
-        latitest.setText(macadr);
+        latitest.setText(slatitude);
         //slatitude = "2222";
         // slongitude ="6444";
         macadr= MAC.toString();

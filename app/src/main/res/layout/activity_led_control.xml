@@ -17,7 +17,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="108dp"
-        android:background="@null" />
+        android:background="@null"
+        android:src="@drawable/gps"/>
 
     <TextView
         android:id="@+id/textView2"
@@ -90,6 +91,7 @@
         android:layout_toEndOf="@+id/on"
         android:text="Position"
         android:visibility="invisible"
+
         android:layout_toRightOf="@+id/on" />
 
     <TextView
@@ -98,13 +100,16 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/Nom"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="64dp" />
+        android:layout_marginEnd="64dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="64dp" />
 
     <TextView
         android:id="@+id/testlati"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/test" />
+        android:layout_alignStart="@+id/test"
+        android:layout_alignLeft="@+id/test" />
 
 </RelativeLayout>

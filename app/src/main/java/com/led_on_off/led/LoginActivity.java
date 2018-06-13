@@ -49,11 +49,11 @@ public class LoginActivity extends AppCompatActivity {
         final String username = etUsername.getText().toString();
         final String password = etPassword.getText().toString();
         if (username.matches("")) {
-            Toast.makeText(this, "You did not enter a username", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vous n'avez pas saisi l'identifiant", Toast.LENGTH_SHORT).show();
             return;
         }
         else if (password.matches("")) {
-            Toast.makeText(this, "You did not enter a password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vous n'avez pas saisi de mot de passe", Toast.LENGTH_SHORT).show();
             return;
         }
         else {
@@ -172,11 +172,11 @@ public class LoginActivity extends AppCompatActivity {
              if (result.equalsIgnoreCase("false")){
 
                 // If username and password does not match display a error message
-                Toast.makeText(LoginActivity.this, "Invalid login or password", Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, "Identifiant ou mot de passe incorrect", Toast.LENGTH_LONG).show();
 
             } else if (result.equalsIgnoreCase("exception") || result.equalsIgnoreCase("unsuccessful")) {
 
-                Toast.makeText(LoginActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, "OOPs! Un probleme de connexion est survenu .", Toast.LENGTH_LONG).show();
 
             }
             else if(result != null)

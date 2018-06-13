@@ -59,9 +59,9 @@ public class ledControl extends AppCompatActivity implements LocationListener {
     TextView locationText;
     TextView longitest;
     TextView latitest;
-static String macadr;
-static String slatitude;
-static String slongitude;
+    static String macadr;
+    static String slatitude;
+    static String slongitude;
     // Button btnOn, btnOff, btnDis;
     ImageButton On, Off, Discnt, Abt,Gps;
     String address = null;
@@ -124,15 +124,15 @@ static String slongitude;
         Gps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               if(activation_gps==true){
-                   activation_gps =false;
-                   Toast.makeText(ledControl.this, "GPS désactivé...", Toast.LENGTH_SHORT).show();
+                if(activation_gps==true){
+                    activation_gps =false;
+                    Toast.makeText(ledControl.this, "GPS désactivé...", Toast.LENGTH_SHORT).show();
 
-               }else {
-                   activation_gps=true;
-                   Toast.makeText(ledControl.this, "GPS activé !", Toast.LENGTH_SHORT).show();
+                }else {
+                    activation_gps=true;
+                    Toast.makeText(ledControl.this, "GPS activé !", Toast.LENGTH_SHORT).show();
 
-               }
+                }
             }
         });
 
@@ -168,7 +168,7 @@ static String slongitude;
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
 
 
-    }
+        }
 
 
 
@@ -178,7 +178,7 @@ static String slongitude;
     void getLocation() {
         try {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, (LocationListener) this);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 5, (LocationListener) this);
         }
         catch(SecurityException e) {
             e.printStackTrace();
@@ -188,8 +188,8 @@ static String slongitude;
     @Override
     public void onLocationChanged(Location location) {
         locationText.setText("Latitude: " + location.getLatitude() + "\n Longitude: " + location.getLongitude());
-          slatitude = String.valueOf(location.getLatitude());
-          slongitude = String.valueOf(location.getLongitude());
+        slatitude = String.valueOf(location.getLatitude());
+        slongitude = String.valueOf(location.getLongitude());
         try {
             Geocoder geocoder = new Geocoder(this, Locale.getDefault());
             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
@@ -204,7 +204,7 @@ static String slongitude;
 
     @Override
     public void onProviderDisabled(String provider) {
-        Toast.makeText(ledControl.this, "Please Enable GPS and Internet", Toast.LENGTH_SHORT).show();
+        Toast.makeText(ledControl.this, "S'il vous plaît activer votre Internet et votre GPS", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -347,7 +347,7 @@ static String slongitude;
                 msg("Connection echoué. Désactivez puis réactivez votre bluetooth.");
                 finish();
             } else {
-                msg("Connected.");
+                msg("Connecté.");
                 isBtConnected = true;
             }
             progress.dismiss();
@@ -614,7 +614,7 @@ static String slongitude;
 
             } else if (result.equalsIgnoreCase("exception") || result.equalsIgnoreCase("unsuccessful")) {
 
-                Toast.makeText(ledControl.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+                Toast.makeText(ledControl.this, "OOPs! Un probleme de connexion est survenu .", Toast.LENGTH_LONG).show();
 
             }
         }

@@ -65,7 +65,7 @@ public class DeviceList extends AppCompatActivity
         if(myBluetooth == null)
         {
             //Show a mensag. that the device has no bluetooth adapter
-            Toast.makeText(getApplicationContext(), "2quipement Bluetooth non viable", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Equipement Bluetooth non viable", Toast.LENGTH_LONG).show();
 
             //finish apk
             finish();

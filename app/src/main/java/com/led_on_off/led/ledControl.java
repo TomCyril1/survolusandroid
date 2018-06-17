@@ -44,7 +44,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.NetworkInterface;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -55,6 +57,8 @@ import static java.lang.Thread.sleep;
 
 public class ledControl extends AppCompatActivity implements LocationListener {
     LocationManager locationManager;
+    LocationManager locationGPS;
+    LocationManager locationNet;
     Menu menu;
     TextView locationText;
     TextView longitest;
@@ -174,11 +178,55 @@ public class ledControl extends AppCompatActivity implements LocationListener {
 
 
     }
+
+    private String getLastBestLocation() {
+        getLocationGPS();
+        if (slongitude != null){
+            String loc = "GPS";
+            return loc;
+        }
+        getLocationNet();
+        if(slongitude != null){
+            String loc = "Net";
+            return loc;
+        }
+        return "GPS";
+    }
     //getlocation
     void getLocation() {
+
+        if (getLastBestLocation()=="GPS"){
+            try {
+                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, (LocationListener) this);
+            }
+            catch(SecurityException e) {
+                e.printStackTrace();
+            }}
+        else if (getLastBestLocation()=="Net") {
+            try {
+                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, (LocationListener) this);
+            }
+            catch(SecurityException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+    void getLocationGPS() {
         try {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 5, (LocationListener) this);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, (LocationListener) this);
+        }
+        catch(SecurityException e) {
+            e.printStackTrace();
+        }
+    }
+    void getLocationNet() {
+        try {
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, (LocationListener) this);
         }
         catch(SecurityException e) {
             e.printStackTrace();
@@ -237,11 +285,11 @@ public class ledControl extends AppCompatActivity implements LocationListener {
         if (btSocket != null) {
             try {
                 activation_parachute = false;
-                display("Mode Parachute Activation désactivation...");
+                // display("Mode Parachute Activation désactivation...");
 
                 btSocket.getOutputStream().write("0".toString().getBytes());
             } catch (IOException e) {
-                msg("Error");
+                msg("Erreur");
             }
         }
     }
@@ -250,11 +298,11 @@ public class ledControl extends AppCompatActivity implements LocationListener {
         if (btSocket != null) {
             try {
                 activation_parachute = true;
-                display("Mode Parachute Activation...");
+                // display("Mode Parachute Activation...");
 
                 btSocket.getOutputStream().write("1".toString().getBytes());
             } catch (IOException e) {
-                msg("Error");
+                msg("Erreur");
             }
         }
     }
@@ -347,7 +395,7 @@ public class ledControl extends AppCompatActivity implements LocationListener {
                 msg("Connection echoué. Désactivez puis réactivez votre bluetooth.");
                 finish();
             } else {
-                msg("Connecté.");
+                msg("Connected.");
                 isBtConnected = true;
             }
             progress.dismiss();
@@ -408,7 +456,7 @@ public class ledControl extends AppCompatActivity implements LocationListener {
                 Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                 vib.vibrate(10000);
             }
-            Toast.makeText(getApplicationContext(), "VOTRE TELEPHONE TOMBE !", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "VOTRE TELEPHONE TOMBE !", Toast.LENGTH_LONG).show();
 
 
             //detect.setText(" Chute détectée !!");
@@ -426,7 +474,7 @@ public class ledControl extends AppCompatActivity implements LocationListener {
                     btSocket.getOutputStream().write("1".toString().getBytes());
                 } catch (IOException e) {
                     e.printStackTrace();
-                    msg("");
+                    msg("Erreur");
                 } catch (InterruptedException e) {
 
                 }
@@ -461,10 +509,12 @@ public class ledControl extends AppCompatActivity implements LocationListener {
         getLocation();
         WifiManager manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo info = manager.getConnectionInfo();
-        String MAC = info.getMacAddress();
+        // String MAC = info.getMacAddress();
+        String MAC = getMacAddr();
         String url = "http://survolus.com:81/chute.php";
         longitest.setText(slongitude);
         latitest.setText(slatitude);
+        //latitest.setText(slatitude);
         //slatitude = "2222";
         // slongitude ="6444";
         macadr= MAC.toString();
@@ -473,6 +523,32 @@ public class ledControl extends AppCompatActivity implements LocationListener {
 
         new AsyncModule().execute(url,"MAC",macadr,"latitude",slatitude,"longitude",slongitude);
 
+    }
+    public static String getMacAddr() {
+        try {
+            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface nif : all) {
+                if (!nif.getName().equalsIgnoreCase("wlan0")) continue;
+
+                byte[] macBytes = nif.getHardwareAddress();
+                if (macBytes == null) {
+                    return "";
+                }
+
+                StringBuilder res1 = new StringBuilder();
+                for (byte b : macBytes) {
+                    res1.append(Integer.toHexString(b & 0xFF) + ":");
+                }
+
+                if (res1.length() > 0) {
+                    res1.deleteCharAt(res1.length() - 1);
+                }
+                return res1.toString();
+            }
+        } catch (Exception ex) {
+            //handle exception
+        }
+        return "";
     }
 
 
@@ -614,7 +690,7 @@ public class ledControl extends AppCompatActivity implements LocationListener {
 
             } else if (result.equalsIgnoreCase("exception") || result.equalsIgnoreCase("unsuccessful")) {
 
-                Toast.makeText(ledControl.this, "OOPs! Un probleme de connexion est survenu .", Toast.LENGTH_LONG).show();
+                Toast.makeText(ledControl.this, "OOPs! Probleme de connexion .", Toast.LENGTH_LONG).show();
 
             }
         }

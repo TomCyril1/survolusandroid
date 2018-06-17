@@ -102,14 +102,16 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="64dp"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="64dp" />
+        android:layout_marginRight="64dp"
+        android:text="TextView"/>
 
     <TextView
         android:id="@+id/testlati"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/test"
-        android:layout_alignLeft="@+id/test" />
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/Nom"
+        android:layout_marginEnd="73dp"
+        android:text="TextView" />
 
 </RelativeLayout>

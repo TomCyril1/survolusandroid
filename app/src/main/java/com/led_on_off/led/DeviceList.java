@@ -20,7 +20,10 @@ import android.bluetooth.BluetoothDevice;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.NetworkInterface;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 
@@ -47,9 +50,9 @@ public class DeviceList extends AppCompatActivity
 
             resultat = intent.getStringExtra("resultat");
         }
-        WifiManager manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        WifiInfo info = manager.getConnectionInfo();
-        String MAC = info.getMacAddress();
+        //WifiManager manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        //WifiInfo info = manager.getConnectionInfo();
+        String MAC = getMacAddr();
         String name = Build.MANUFACTURER+ " " + Build.MODEL;
 
         String url = "http://survolus.com:81/getmodule.php";
@@ -85,6 +88,32 @@ public class DeviceList extends AppCompatActivity
             }
         });
 
+    }
+    public static String getMacAddr() {
+        try {
+            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface nif : all) {
+                if (!nif.getName().equalsIgnoreCase("wlan0")) continue;
+
+                byte[] macBytes = nif.getHardwareAddress();
+                if (macBytes == null) {
+                    return "";
+                }
+
+                StringBuilder res1 = new StringBuilder();
+                for (byte b : macBytes) {
+                    res1.append(Integer.toHexString(b & 0xFF) + ":");
+                }
+
+                if (res1.length() > 0) {
+                    res1.deleteCharAt(res1.length() - 1);
+                }
+                return res1.toString();
+            }
+        } catch (Exception ex) {
+            //handle exception
+        }
+        return "";
     }
 
     private void pairedDevicesList()
